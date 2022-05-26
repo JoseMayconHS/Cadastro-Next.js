@@ -1,6 +1,6 @@
 import Person, { IPersonConstructor } from './Person'
 
-interface IClienteConstructor extends IPersonConstructor {
+export interface IClienteConstructor extends IPersonConstructor {
   id?: string
 }
 
