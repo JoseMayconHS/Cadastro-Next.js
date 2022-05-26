@@ -7,14 +7,10 @@ interface IClienteConstructor extends IPersonConstructor {
 export default class Client extends Person {
   #id?: string
 
-  // (DEV)
-  static init() {
-    return new Client({ name: 'Maycon Silva', age: 22 })
-  }
-
   constructor({ id, name, age }: IClienteConstructor) {
     super({ age, name })
-    this.#id = id
+    // (DEV) DEVE SER id
+    this.#id = id || String((Math.random() * 9999).toFixed(2)).replace(/[.]/g, '')
   }
 
   get id() {

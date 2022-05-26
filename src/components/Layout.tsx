@@ -1,11 +1,11 @@
-import { ComponentProps } from "react"
+import { ReactNode } from "react"
 import Title, { ITitleProps } from "./Title"
 
 interface ILayoutProps extends ITitleProps {
-
+  children: ReactNode
 }
 
-export default function Layout({ title, children }: ComponentProps<keyof ILayoutProps>) {
+export default function Layout({ title, children }: ILayoutProps) {
   return (
     <div className="
       flex flex-col w-2/3 justify-center

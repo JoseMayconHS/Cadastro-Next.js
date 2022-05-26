@@ -1,10 +1,9 @@
-import { ComponentProps } from "react"
 
 export interface ITitleProps {
   title: string
 }
 
-export default function Title({ title }: ComponentProps<keyof ITitleProps>) {
+export default function Title({ title }: ITitleProps) {
   return (
     <div className="
       flex flex-col justify-center
