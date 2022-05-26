@@ -1,5 +1,5 @@
 import { 
-  Dispatch, InputHTMLAttributes, SetStateAction 
+  Dispatch, forwardRef, InputHTMLAttributes, SetStateAction 
 } from "react"
 import { Copy } from "../Icons"
 
@@ -8,9 +8,9 @@ interface IInputProps extends InputHTMLAttributes<any> {
   setValue?: Dispatch<SetStateAction<any>>
 }
 
-export default function Input({ 
+const Input = forwardRef<HTMLInputElement, IInputProps>(({ 
   label, setValue, ...rest
-}: IInputProps) {
+}, ref) => {
   return (
     <div className="
       flex flex-col gap-y-2
@@ -28,6 +28,7 @@ export default function Input({
             { onChange: ({ target }) => setValue(target.value) } 
             : {}
         )}
+        ref={ ref }
         className={`
           border border-purple-500 rounded-lg
           focus:outline-none bg-gray-100 px-4 py-2
@@ -36,4 +37,6 @@ export default function Input({
       />
     </div>
   )
-}
+})
+
+export default Input

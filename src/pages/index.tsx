@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 
 import Client from "../core/Client"
 
@@ -8,6 +8,7 @@ import Table, {
 } from "../components/Table"
 import Button from "../components/Button"
 import Form from "../components/Form"
+import Link from "next/link"
 
 export default function Home() {
   const clients = [
@@ -16,32 +17,37 @@ export default function Home() {
     new Client({ id: '4', name: 'João', age: 29 })
   ]
 
+  const [data, setData] = useState<Client | undefined>()
+
   const _handleEdit: THandlesTable = useCallback((client) => {
-    console.log(client.name)
-  }, [])
+    setData(client)
+  }, [data])
 
   const _handleRemove: THandlesTable = useCallback((client) => {
     console.log(client.name)
   }, [])
 
   return (
-    <div className={`
-      flex justify-center items-center 
-      h-screen bg-gradient-to-r from-blue-500 to-purple-500 
-      text-white font-semibold
-    `}>
-      <Layout title="Cadastro simples">
-        <div className="
-          flex justify-end mb-4
-          ">
-          <Button color='green'>Novo cliente</Button>
-        </div>
-        <Form client={ clients[0] } />
-        {/* <Table 
-          clients={ clients } 
-          _handleEdit={ _handleEdit } _handleRemove={ _handleRemove } 
-        /> */}
-      </Layout>
-    </div>
+    <Layout title="Cadastro simples">
+      {
+        data ? (
+          <Form client={ data } _handleBack={ () => setData(undefined) } />
+        ) : (
+          <>
+            <div className="
+              flex justify-end mb-4
+            ">
+              <Button color='green' 
+                onClick={() => setData(new Client({ name: '', age: 0 }))}
+              >Novo cliente</Button>
+            </div>
+            <Table 
+              clients={ clients } 
+              _handleEdit={ _handleEdit } _handleRemove={ _handleRemove } 
+            />
+          </>
+        )
+      }
+    </Layout>
   )
 }

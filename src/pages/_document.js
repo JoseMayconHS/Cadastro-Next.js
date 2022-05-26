@@ -17,8 +17,17 @@ export default class MyDocument extends Document {
         </Head>
         <body>
           <Header />
-          <main>
-            <Main />
+          <main className="
+            flex justify-center items-center 
+            bg-gradient-to-r from-blue-500 to-purple-500 
+            text-white font-semibold max-w-full
+          ">
+            <div className="
+              flex justify-center
+              w-screen p-3
+            ">
+              <Main />
+            </div>
           </main>
           <Footer />
           <NextScript />

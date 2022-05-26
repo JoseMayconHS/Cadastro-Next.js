@@ -8,7 +8,7 @@ interface ILayoutProps extends ITitleProps {
 export default function Layout({ title, children }: ILayoutProps) {
   return (
     <div className="
-      flex flex-col w-2/3 justify-center
+      flex flex-col w-screen max-w-3xl justify-center
       bg-white text-gray-800 rounded-md
     ">
       <Title title={ title } />
