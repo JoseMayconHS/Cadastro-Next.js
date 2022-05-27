@@ -4,7 +4,7 @@ import Client from "../core/Client"
 
 import { Edit, Trash } from './Icons'
 
-export type THandles = (client: Client) => void
+export type THandles = (client: Client) => Promise<void> | void
 
 interface ITableProps {
   clients?: Client[],

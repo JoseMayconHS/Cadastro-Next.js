@@ -36,7 +36,6 @@ export default class ClientCollection implements Repo {
 
     const doc = await docRef.get()
 
-
     return doc.data()
   }
 

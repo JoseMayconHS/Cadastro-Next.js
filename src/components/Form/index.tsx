@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from "react"
-import { InputType } from "zlib"
 
 import Client from "../../core/Client"
 import Button from "../Button"
@@ -8,24 +7,25 @@ import Input from "./Input"
 
 interface IFormProps {
   client?: Client,
-  _handleBack(): void
+  _handleBack(): void,
+  _handleSubmit(client: Client): Promise<void>
 }
 
-export default function Form({ client, _handleBack }: IFormProps) {
+export default function Form({ client, _handleBack, _handleSubmit }: IFormProps) {
   const [name, setName] = useState(client?.name || '')
   const [age, setAge] = useState(client?.age || 1)
 
   const inputNameRef = useRef<HTMLInputElement>(null)
   const inputAgeRef = useRef<HTMLInputElement>(null)
 
-  const _handleSubmit = useCallback(() => {
+  const _handleSave = useCallback(() => {
     if (client?.id) {
       // (DESC) SE FOR PARA ATUALIZAR UM CLIENTE
       const newClient = new Client({ id: client.id, name, age })
       
-      console.log('Alterado ', newClient)
+      console.log('Alter ', newClient)
       
-      return
+      return _handleSubmit(newClient)
     }
 
     // (DESC) SE FOR PARA CADASTRAR UM NOVO CLIENTE
@@ -39,7 +39,8 @@ export default function Form({ client, _handleBack }: IFormProps) {
 
     const data = new Client({ name, age })
 
-    console.log('Criado ', data)
+    console.log('Criar ', data)
+    _handleSubmit(data)
   }, [name, age, inputAgeRef, inputNameRef])
 
   return (
@@ -75,7 +76,7 @@ export default function Form({ client, _handleBack }: IFormProps) {
       <div className="
         flex flex-nowrap gap-x-3 justify-end
       ">
-        <Button color="blue" onClick={ _handleSubmit }>{ client?.id ? 'Alterar' : 'Salvar' }</Button>
+        <Button color="blue" onClick={ _handleSave }>{ client?.id ? 'Alterar' : 'Salvar' }</Button>
         <Button color='gray' onClick={ _handleBack }>Voltar</Button>
       </div>
     </div>

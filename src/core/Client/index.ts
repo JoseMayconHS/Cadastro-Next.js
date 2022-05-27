@@ -9,7 +9,6 @@ export default class Client extends Person {
 
   constructor({ id = '', name, age }: IClienteConstructor) {
     super({ age, name })
-    // (DEV) DEVE SER id
     this.#id = id
   }
   
