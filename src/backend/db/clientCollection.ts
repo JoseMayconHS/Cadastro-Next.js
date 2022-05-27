@@ -1,11 +1,17 @@
+import { 
+  Firestore, FirestoreDataConverter,
+  getFirestore, collection, getDocs, deleteDoc, getDoc, updateDoc, addDoc, doc
+} from 'firebase/firestore/lite'
+
 import firebase  from '../firebase'
 
 import Repo from '../../core/Client/Repo'
 import Client, { IClienteConstructor } from '../../core/Client'
 
 export default class ClientCollection implements Repo {
+  #db: Firestore
 
-  #conversor = {
+  #conversor: FirestoreDataConverter<any> = {
     toFirestore(client: Client): IClienteConstructor {
       const { age, name } = client
 
@@ -13,49 +19,59 @@ export default class ClientCollection implements Repo {
         age, name
       }
     },
-    fromFirestore(snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions): Client {
-      const data = snapshot.data(options)
+    fromFirestore(snapshot): Client {
+      const data = snapshot.data()
 
       return new Client({ name: data.name, age: data.age, id: snapshot.id })
     }
   }
-  
-  async save(client: Client): Promise<Client | undefined> {
+
+  constructor() {
+    this.#db = getFirestore(firebase)
+  }
+
+  async save(client: Client): Promise<Client> {
+    const colletionRefecence = this.#collection()
+
     if (client?.id) {
       // (DESC) ATUALIZAR UM CLIENTE
-      await this.#collection()
-        .doc(client.id)
-        .set(client)
 
+      const docRef = doc(colletionRefecence, client.id)
+
+      await updateDoc(docRef, client.object())
+        
       return client
     }
 
     // (DESC) SALVAR UM CLIENTE
-    const docRef = await this.#collection()
-      .add(client)
+    const docRef = await addDoc(colletionRefecence, client)
 
-    const doc = await docRef.get()
+    const data = await getDoc(docRef)
 
-    return doc.data()
+    return new Client({ ...client.object(), id: data.id })
   }
 
-  async remove(client: Client): Promise<void> {
-    await this.#collection()
-      .doc(client.id)
-      .delete()
+  async remove(client: Client): Promise<void> {    
+    if (client.id) {
+      const colletionRefecence = this.#collection()
+
+      const docRef = doc(colletionRefecence, client.id)
+      
+      await deleteDoc(docRef)
+    }
   }
 
   async getAll(): Promise<Client[]> {
-    const query = await this.#collection()
-      .get()
+    const colletionRefecence = this.#collection()
 
-    return query.docs.map(doc => doc.data()) ?? []
+    const docs = await getDocs(colletionRefecence)
+
+    return docs.docs.map(doc => doc.data()) ?? []
   }
 
   #collection() {
-    return firebase
-      .firestore()
-      .collection('Clients')
-      .withConverter(this.#conversor)
+    const query = collection(this.#db, 'Clients')
+
+    return query.withConverter<Client>(this.#conversor)
   }
 }

@@ -15,4 +15,12 @@ export default class Client extends Person {
   get id() {
     return this.#id
   }
+
+  object() {
+    return {
+      id: this.#id,
+      name: this.name,
+      age: this.age
+    }
+  }
 }

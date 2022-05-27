@@ -2,18 +2,19 @@ import { useCallback } from "react"
 
 import Client from "../core/Client"
 
-import { Edit, Trash } from './Icons'
+import { Edit, Loading, Trash } from './Icons'
 
 export type THandles = (client: Client) => Promise<void> | void
 
 interface ITableProps {
+  loading: boolean,
   clients?: Client[],
   _handleEdit?: THandles,
   _handleRemove?: THandles,
 }
 
 export default function Table({ 
-  clients = [], 
+  loading, clients = [], 
   _handleEdit, _handleRemove 
 }: ITableProps) {
 
@@ -62,6 +63,28 @@ export default function Table({
   const _renderList = useCallback(() => {
     const styles = `text-left p-4`
 
+    if (loading || !clients.length) {
+      return (
+        <tr>
+          <td colSpan={ showActions ? 4 : 3 } 
+            className="
+             bg-purple-200 p-4
+            "
+          >
+            <div className="flex justify-center">
+              {
+                loading ? (
+                  <Loading />
+                ) : (
+                  <span>Nenhum cadastro</span>
+                )
+              }
+            </div>
+          </td>
+        </tr>
+      )
+    }
+
     return clients?.map((client, i) => {
       const { id, name, age } = client
 
@@ -76,7 +99,7 @@ export default function Table({
         </tr>
       )
     })
-  }, [clients])
+  }, [clients, loading])
 
   return (
     <table className="
